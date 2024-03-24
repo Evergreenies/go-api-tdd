@@ -3,9 +3,11 @@ package main
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 
+	"github.com/evergreenies/go-api-tdd/pkg/store/sqlstore/postgres"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -34,11 +36,38 @@ func databaseConnection() (*sql.DB, error) {
 	return db, nil
 }
 
+func setup() (*server, error) {
+	db, err := databaseConnection()
+	if err != nil {
+		return nil, err
+	}
+
+	pStore := postgres.NewPostgresStore(db)
+	serv := newServer(pStore)
+	serv.setupRoutes()
+
+	return serv, nil
+}
+
 func main() {
 	godotenv.Load(".env")
 
-	_, err := databaseConnection()
+	serv, err := setup()
 	if err != nil {
+		log.Fatal(err)
+	}
+
+	host := os.Getenv("HOST")
+	if host == "" {
+		host = "localhost"
+	}
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	address := fmt.Sprintf("%s:%s", host, port)
+
+	if err = serv.run(address); err != nil {
 		log.Fatal(err)
 	}
 }
