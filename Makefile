@@ -7,3 +7,9 @@ test:
 coverage:
 	@go tool cover -html=coverage.txt -o coverage.html
 
+tidy:
+	@go mod tidy
+
+vendor:
+	@go mod vendor
+

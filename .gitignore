@@ -19,3 +19,8 @@ vendor/
 
 # Go workspace file
 go.work
+
+# omitting coverage files
+coverage.txt
+coverage.html
+
