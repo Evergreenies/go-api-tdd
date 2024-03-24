@@ -15,6 +15,7 @@ var (
 	sqlDeleteUserByID  = `delete from users where id = $1`
 	sqlFindUserByEmail = `select id, name, email, password from users where email = $1`
 	sqlFindUserByID    = `select id, name, email, password from users where id = $1`
+	sqlDeleteAllUsers  = `delete from users`
 )
 
 func (p *postgresStore) CreateUser(user *domain.User) (*domain.User, error) {
@@ -72,4 +73,13 @@ func (p *postgresStore) FindUserByID(id int64) (*domain.User, error) {
 	}
 
 	return user, nil
+}
+
+func (p *postgresStore) DeleteAllUsers() error {
+	_, err := p.db.Exec(sqlDeleteAllUsers)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

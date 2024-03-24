@@ -141,3 +141,23 @@ func TestFindUserByID(t *testing.T) {
 	}
 	sqlFindUserByEmail = oldFindUserByEmail
 }
+
+func TestDeleteAllUsers(t *testing.T) {
+	pStore := NewPostgresStore(testDB)
+
+	user := &domain.User{
+		Email:    "test@test@mail.com",
+		Password: "password",
+		Name:     "Jon Doe",
+	}
+
+	_, err := pStore.CreateUser(user)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = pStore.DeleteAllUsers()
+	if err != nil {
+		t.Fatal(err)
+	}
+}

@@ -8,11 +8,13 @@ import (
 type server struct {
 	router *gin.Engine
 	store  domain.Store
+	jwt    domain.JWT
 }
 
-func newServer(store domain.Store) *server {
+func newServer(store domain.Store, jwt domain.JWT) *server {
 	return &server{
 		store: store,
+		jwt:   jwt,
 	}
 }
 

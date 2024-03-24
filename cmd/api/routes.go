@@ -11,9 +11,7 @@ func (s *server) setupRoutes() {
 	v1.GET("/health-check", func(ctx *gin.Context) {
 		ctx.JSON(200, "OK.")
 	})
-	v1.POST("/users/create", func(ctx *gin.Context) {
-		ctx.JSON(200, "OK")
-	})
+	v1.POST("/users/create", s.createUser)
 
 	s.router = mux
 }

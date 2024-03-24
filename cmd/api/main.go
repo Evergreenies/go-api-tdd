@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/evergreenies/go-api-tdd/pkg/security"
 	"github.com/evergreenies/go-api-tdd/pkg/store/sqlstore/postgres"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -15,7 +16,7 @@ import (
 func databaseConnection() (*sql.DB, error) {
 	dbUri := os.Getenv("DB_URI")
 	if dbUri == "" {
-		return nil, errors.New("Database connection does not exist in enviroment variables.")
+		return nil, errors.New("Database connection string does not exist in enviroment variables.")
 	}
 
 	dbDriver := os.Getenv("DB_DRIVER")
@@ -43,7 +44,12 @@ func setup() (*server, error) {
 	}
 
 	pStore := postgres.NewPostgresStore(db)
-	serv := newServer(pStore)
+	secretKey := os.Getenv("JWT_SECRET")
+	newJWT, err := security.NewJWT(secretKey)
+	if err != nil {
+		return nil, err
+	}
+	serv := newServer(pStore, newJWT)
 	serv.setupRoutes()
 
 	return serv, nil
